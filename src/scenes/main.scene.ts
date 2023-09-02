@@ -19,21 +19,22 @@ export default class Main extends Phaser.Scene {
   }
 
   public update() {
-    this.grid.items[0].highlighted = false
-    this.grid.items[1].highlighted = false
-    this.grid.items[2].highlighted = false
+    const [first, second, third] = this.grid.items
+    first.highlighted = false
+    second.highlighted = false
+    third.highlighted = false
     this.active = null
     if (this.player.y < 700) {
       const columnWidth = (this.game.config.width as number) / this.grid.columns
       if (this.player.x < columnWidth) {
-        this.grid.items[0].highlighted = true
-        this.active = this.grid.items[0]
+        first.highlighted = true
+        this.active = first
       } else if (this.player.x > columnWidth * 2) {
-        this.grid.items[2].highlighted = true
-        this.active = this.grid.items[2]
+        third.highlighted = true
+        this.active = third
       } else {
-        this.grid.items[1].highlighted = true
-        this.active = this.grid.items[1]
+        second.highlighted = true
+        this.active = second
       }
     }
   }
@@ -42,6 +43,7 @@ export default class Main extends Phaser.Scene {
     this.player.x = this.player.originalX
     this.player.y = this.player.originalY
     if (this.active) {
+      this.active.selected = true
       switch (this.active.skill) {
         case 'attack':
           this.player.attack(this.active.valueLevel)
@@ -57,6 +59,7 @@ export default class Main extends Phaser.Scene {
           this.player.armorLevel = this.active.valueLevel
           break
       }
+      this.grid.fadeFrontRow()
     }
   }
 

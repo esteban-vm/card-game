@@ -7,6 +7,7 @@ export default class CardItem extends CardBase {
   private numValue!: number
   public skill
   public dead
+  public selected
 
   constructor(value: number, skill: Skill, ...params: ConstructorParameters<typeof CardBase>) {
     super(...params)
@@ -15,6 +16,7 @@ export default class CardItem extends CardBase {
     this.add(this.textValue)
     this.skill = skill
     this.dead = false
+    this.selected = false
   }
 
   public set valueLevel(value: number) {

@@ -29,10 +29,10 @@ export default class CardGrid {
       { name: 'Fire Drake', value: 16, character: 'FireDrake', skill: 'attack' },
       { name: 'Golden Dragon', value: 20, character: 'GoldenDragon', skill: 'attack' },
     ]
-    this.addCard(0)
+    this.addCards(0)
   }
 
-  private addCard(startIndex: number) {
+  private addCards(startIndex: number) {
     for (let index = startIndex; index < this.columns * this.rows; index++) {
       const card = this.data[Math.floor(Math.random() * this.data.length)]
       const x = this.offsetX + ((this.scene.game.config.width as number) * 0.5 - this.offsetX) * (index % this.columns)
@@ -40,6 +40,31 @@ export default class CardGrid {
       const item = new CardItem(card.value, card.skill, this.scene, x, y, 'Card', card.character, card.name, 0)
       this.items.push(item)
     }
+  }
+
+  public fadeFrontRow() {
+    setTimeout(() => {
+      this.items.splice(0, 3).forEach((item) => item.destroy())
+      this.items.forEach((item) => {
+        this.scene.tweens.add({
+          targets: item,
+          duration: 400,
+          y: item.y + this.offsetY,
+          onComplete: () => this.addBackRow(),
+        })
+      })
+    }, 1_000)
+
+    this.items.slice(0, 3).forEach((item) => {
+      if (!item.selected) {
+        this.scene.tweens.add({ targets: item, alpha: 0, duration: 200 })
+      }
+    })
+  }
+
+  private addBackRow() {
+    if (this.items.length >= this.columns * this.rows) return
+    this.addCards(6)
   }
 }
 

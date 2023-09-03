@@ -24,6 +24,7 @@ export default class CardGrid {
       { name: 'Major Healing Potion', value: 6, character: 'HealingPotion', skill: 'heal' },
       { name: 'Shield', value: 5, character: 'Shield', skill: 'armor' },
       { name: 'Kobold', value: 6, character: 'Kobold', skill: 'attack' },
+      { name: 'Troll', value: 8, character: 'Troll', skill: 'attack' },
       { name: 'Ogre', value: 10, character: 'Ogre', skill: 'attack' },
       { name: 'Death Knight', value: 12, character: 'DeathKnight', skill: 'attack' },
       { name: 'Fire Drake', value: 16, character: 'FireDrake', skill: 'attack' },

@@ -27,8 +27,9 @@ export default class Main extends Phaser.Scene {
     second.highlighted = false
     third.highlighted = false
     this.activeCard = undefined
-    if (this.player.y < 700) {
-      const columnWidth = this.gw / this.grid.columns
+    const columnWidth = this.gw / this.grid.columns
+    const xDiff = Math.abs(this.player.x - this.player.originalX)
+    if (this.player.y < 700 && xDiff < columnWidth * 1.4) {
       if (this.player.x < columnWidth) {
         first.highlighted = true
         this.activeCard = first
@@ -46,6 +47,7 @@ export default class Main extends Phaser.Scene {
     this.player.x = this.player.originalX
     this.player.y = this.player.originalY
     if (this.activeCard) {
+      this.player.originalX = this.player.x = this.activeCard.x
       this.activeCard.selected = true
       switch (this.activeCard.skill) {
         case 'attack':

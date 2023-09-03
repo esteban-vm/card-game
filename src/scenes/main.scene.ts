@@ -1,19 +1,22 @@
 import type { CardItem } from '@/types'
-import { Scenes } from '@/constants'
+import { Images, Scenes } from '@/constants'
 import { CardGrid, CardPlayer } from '@/sprites'
 
 export default class Main extends Phaser.Scene {
-  public active!: CardItem | null
+  private gw!: number
+  private gh!: number
   public player!: CardPlayer
   public grid!: CardGrid
+  public activeCard?: CardItem
 
   constructor() {
     super(Scenes.Main)
   }
 
   public create() {
-    const { width, height } = this.game.config as { width: number; height: number }
-    this.player = new CardPlayer(16, this.makeMove, this, width * 0.5, height - 200, 'PlayerCard', 'Paladin', 'Player')
+    this.gw = this.game.config.width as number
+    this.gh = this.game.config.height as number
+    this.player = new CardPlayer(16, this.move, this, this.gw * 0.5, this.gh - 200, 'PlayerCard', 'Paladin', 'Player')
     this.grid = new CardGrid(this, 3, 3)
     this.input.keyboard?.on('keydown', this.toggleFullscreen)
   }
@@ -23,43 +26,45 @@ export default class Main extends Phaser.Scene {
     first.highlighted = false
     second.highlighted = false
     third.highlighted = false
-    this.active = null
+    this.activeCard = undefined
     if (this.player.y < 700) {
-      const columnWidth = (this.game.config.width as number) / this.grid.columns
+      const columnWidth = this.gw / this.grid.columns
       if (this.player.x < columnWidth) {
         first.highlighted = true
-        this.active = first
+        this.activeCard = first
       } else if (this.player.x > columnWidth * 2) {
         third.highlighted = true
-        this.active = third
+        this.activeCard = third
       } else {
         second.highlighted = true
-        this.active = second
+        this.activeCard = second
       }
     }
   }
 
-  private makeMove = () => {
+  private move = () => {
     this.player.x = this.player.originalX
     this.player.y = this.player.originalY
-    if (this.active) {
-      this.active.selected = true
-      switch (this.active.skill) {
+    if (this.activeCard) {
+      this.activeCard.selected = true
+      switch (this.activeCard.skill) {
         case 'attack':
-          this.player.attack(this.active.valueLevel)
-          this.active.dead = true
+          this.player.attack(this.activeCard.valueLevel)
+          this.activeCard.dead = true
+          this.activeCard.deathAnimation()
           break
         case 'heal':
           this.player.healthLevel = Math.min(
-            this.player.healthLevel + this.active.valueLevel,
+            this.player.healthLevel + this.activeCard.valueLevel,
             this.player.maxHealthLevel
           )
           break
         case 'armor':
-          this.player.armorLevel = this.active.valueLevel
+          this.player.armorLevel = this.activeCard.valueLevel
           break
       }
-      this.grid.fadeFrontRow()
+      if (this.player.dead) this.addRestartButton()
+      else this.grid.fadeFrontRow()
     }
   }
 
@@ -68,5 +73,17 @@ export default class Main extends Phaser.Scene {
       if (!document.fullscreenElement) document.documentElement.requestFullscreen()
       else document.exitFullscreen()
     }
+  }
+
+  private addRestartButton() {
+    const restartButton = this.add.image(this.gw * 0.5, this.gh * 0.5, Images.RestartButton)
+    restartButton.depth = 2
+    restartButton.setInteractive()
+    restartButton.on('pointerover', () => (restartButton.tint = 0xcccccc))
+    restartButton.on('pointerout', () => (restartButton.tint = 0xffffff))
+    restartButton.on('pointerdown', () => {
+      restartButton.tint = 0xffffff
+      this.scene.restart()
+    })
   }
 }

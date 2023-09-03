@@ -74,6 +74,7 @@ export default class CardPlayer extends CardDraggable {
     this.healthLevel = 0
     this.cardName = 'DEAD'
     this.isDraggable = false
+    this.deathAnimation()
   }
 
   public get dead() {

@@ -20,6 +20,7 @@ export default abstract class CardBase extends Phaser.GameObjects.Container {
   }
 
   protected set cardName(name: string) {
+    this.name = name
     this.textName.text = name
     this.textName.fontSize = 16
     this.textName.align = Phaser.GameObjects.BitmapText.ALIGN_CENTER
@@ -31,5 +32,16 @@ export default abstract class CardBase extends Phaser.GameObjects.Container {
 
   protected get cardName() {
     return this.name
+  }
+
+  public deathAnimation() {
+    this.scene.tweens.add({
+      targets: this.spriteChar,
+      alpha: 0,
+      duration: 100,
+      repeat: 1,
+      yoyo: true,
+      onComplete: () => this.spriteChar.setTexture(Images.Dead),
+    })
   }
 }

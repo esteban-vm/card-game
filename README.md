@@ -11,7 +11,10 @@
 - [Prettier](https://prettier.io/ 'Prettier')
 
 ## Controls:
+
 - use the **mouse** to drag and drop the player card
+
+_(touch screens are supported too)_
 
 ## License:
 
